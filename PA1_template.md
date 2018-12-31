@@ -16,6 +16,8 @@ knitr::opts_chunk$set(echo = TRUE, results = "asis", warning = TRUE, message = T
 
 ```r
 library(xtable)
+library(ggplot2)
+library(lattice)
 ```
 
 ## Loading and preprocessing the data
@@ -60,7 +62,7 @@ rm(initial)
 ##### A first look at the data ..
 
 <!-- html table generated in R 3.5.0 by xtable 1.8-3 package -->
-<!-- Mon Dec 31 13:16:24 2018 -->
+<!-- Mon Dec 31 16:46:12 2018 -->
 <table border=1>
 <tr> <th>  </th> <th> steps </th> <th> date </th> <th> interval </th>  </tr>
   <tr> <td align="right"> 1 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">   0 </td> </tr>
@@ -137,7 +139,6 @@ with(intervalAverageDF,
 
 ### 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-
 ```r
 maxAverageSteps <- max(intervalAverageDF$averageSteps)
 intervalAverageDF[intervalAverageDF$averageSteps == maxAverageSteps, ]
@@ -146,11 +147,9 @@ intervalAverageDF[intervalAverageDF$averageSteps == maxAverageSteps, ]
     interval averageSteps
 835      835     206.1698
 
-
 ## Imputing missing values
 
 ### 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
-
 
 ```r
 sum(is.na(fullData))
@@ -162,14 +161,74 @@ sum(is.na(fullData))
 
 ### 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
+##### Using average data to correct null information
+
+
+```r
+imputeData <- fullData
+naLogicalVector <- is.na(fullData$steps)
+imputeData$steps[naLogicalVector] <- intervalAverage[as.character(imputeData$interval[naLogicalVector])]
+```
+
 ### 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps? 
+
+##### Histogram with imputed data
+
+
+```r
+newTotalStepsByDay <- tapply(imputeData$steps, imputeData$date, sum)
+hist(newTotalStepsByDay,
+     col="blue",
+     breaks=20,
+     xlab="Total Steps per day",
+     ylab="Frequency",
+     main="Distribution of Total Steps per day - imputed data")
+```
+
+![](PA1_template_files/figure-html/histogramWithImputedData-1.png)<!-- -->
+
+##### Mean and Median with imputed data
+
+
+```r
+mean(newTotalStepsByDay)
+```
+
+[1] 10766.19
+
+```r
+median(newTotalStepsByDay)
+```
+
+[1] 10766.19
+
+##### If we compare the imputed data with the cleaned data used before, the differences are negligible (n.b.: only on median value). A possible explanation is the use of media values for missing values.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
 ### 1. Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 
+
+```r
+imputeData$dateType <- ifelse(weekdays(imputeData$date) %in% c("sabato", "domenica"), "weekend", "weekday")
+imputeData$dateType <- as.factor(imputeData$dateType)
+```
+
 ### 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). The plot should look something like the following, which was creating using simulated data.
 
+
+```r
+averagedImputeData <- aggregate(steps ~ interval + dateType, data=imputeData, mean)
+xyplot(steps ~ interval | factor(dateType),
+         layout = c(1, 2),
+         xlab="Interval",
+         ylab="Number of steps",
+         type="l",
+         lty=1,
+         data=averagedImputeData)
+```
+
+![](PA1_template_files/figure-html/weekendPlot-1.png)<!-- -->
 
 
 
