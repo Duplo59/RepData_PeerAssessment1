@@ -235,7 +235,7 @@ rm(initial) </code></pre>
 <div id="a-first-look-at-the-data-.." class="section level5">
 <h5>A first look at the data ..</h5>
 <!-- html table generated in R 3.5.0 by xtable 1.8-3 package -->
-<!-- Mon Dec 31 16:46:12 2018 -->
+<!-- Mon Dec 31 17:05:32 2018 -->
 <table border="1">
 <tr>
 <th>
@@ -446,15 +446,15 @@ intervalAverageDF[intervalAverageDF$averageSteps == maxAverageSteps, ]</code></p
 </div>
 <div id="devise-a-strategy-for-filling-in-all-of-the-missing-values-in-the-dataset.-the-strategy-does-not-need-to-be-sophisticated.-for-example-you-could-use-the-meanmedian-for-that-day-or-the-mean-for-that-5-minute-interval-etc." class="section level3">
 <h3>2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.</h3>
+<div id="using-average-data-to-correct-missing-information" class="section level5">
+<h5>Using average data to correct missing information</h5>
+</div>
 </div>
 <div id="create-a-new-dataset-that-is-equal-to-the-original-dataset-but-with-the-missing-data-filled-in." class="section level3">
 <h3>3. Create a new dataset that is equal to the original dataset but with the missing data filled in.</h3>
-<div id="using-average-data-to-correct-null-information" class="section level5">
-<h5>Using average data to correct null information</h5>
 <pre class="r"><code>imputeData &lt;- fullData
 naLogicalVector &lt;- is.na(fullData$steps)
 imputeData$steps[naLogicalVector] &lt;- intervalAverage[as.character(imputeData$interval[naLogicalVector])]</code></pre>
-</div>
 </div>
 <div id="make-a-histogram-of-the-total-number-of-steps-taken-each-day-and-calculate-and-report-the-mean-and-median-total-number-of-steps-taken-per-day.-do-these-values-differ-from-the-estimates-from-the-first-part-of-the-assignment-what-is-the-impact-of-imputing-missing-data-on-the-estimates-of-the-total-daily-number-of-steps" class="section level3">
 <h3>4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?</h3>

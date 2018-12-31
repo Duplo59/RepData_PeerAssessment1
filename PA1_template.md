@@ -62,7 +62,7 @@ rm(initial)
 ##### A first look at the data ..
 
 <!-- html table generated in R 3.5.0 by xtable 1.8-3 package -->
-<!-- Mon Dec 31 16:46:12 2018 -->
+<!-- Mon Dec 31 17:05:32 2018 -->
 <table border=1>
 <tr> <th>  </th> <th> steps </th> <th> date </th> <th> interval </th>  </tr>
   <tr> <td align="right"> 1 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">   0 </td> </tr>
@@ -159,10 +159,9 @@ sum(is.na(fullData))
 
 ### 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
+##### Using average data to correct missing information
+
 ### 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
-
-##### Using average data to correct null information
-
 
 ```r
 imputeData <- fullData
