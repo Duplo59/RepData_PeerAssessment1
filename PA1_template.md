@@ -7,12 +7,14 @@ output:
 
 ## Setting Global Options
 
-```{r setoptions, echo = TRUE}
+
+```r
 knitr::opts_chunk$set(echo = TRUE, results = "asis", warning = TRUE, message = TRUE)
 ```
 
 ## Loading R packages
-```{r, echo=TRUE, results='TRUE', warning=FALSE, message=FALSE}
+
+```r
 library(xtable)
 ```
 
@@ -22,7 +24,8 @@ library(xtable)
 
 ##### Unzip the file
 
-```{r unzipFile}
+
+```r
 zipDataFile <- "activity.zip"
 dataFile <- "activity.csv"
 if(!file.exists(dataFile)){
@@ -31,7 +34,8 @@ if(!file.exists(dataFile)){
 ```
 ##### Read and load the data
 
-```{r readLoadData}
+
+```r
 workingDirectory <- getwd()
 initial <- read.table(file.path(workingDirectory, 
         dataFile),
@@ -55,18 +59,27 @@ rm(initial)
 
 ##### A first look at the data ..
 
-```{r dataSummary, echo=FALSE}
-
-# First ten rows ..
-xtHead <- xtable(head(fullData, 10))
-print(xtHead, type = "html")
-
-```
+<!-- html table generated in R 3.5.0 by xtable 1.8-3 package -->
+<!-- Mon Dec 31 13:16:24 2018 -->
+<table border=1>
+<tr> <th>  </th> <th> steps </th> <th> date </th> <th> interval </th>  </tr>
+  <tr> <td align="right"> 1 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">   0 </td> </tr>
+  <tr> <td align="right"> 2 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">   5 </td> </tr>
+  <tr> <td align="right"> 3 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">  10 </td> </tr>
+  <tr> <td align="right"> 4 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">  15 </td> </tr>
+  <tr> <td align="right"> 5 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">  20 </td> </tr>
+  <tr> <td align="right"> 6 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">  25 </td> </tr>
+  <tr> <td align="right"> 7 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">  30 </td> </tr>
+  <tr> <td align="right"> 8 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">  35 </td> </tr>
+  <tr> <td align="right"> 9 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">  40 </td> </tr>
+  <tr> <td align="right"> 10 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">  45 </td> </tr>
+   </table>
 
 ### 2. Process/transform the data (if necessary) into a format suitable for your analysis
 
 ##### Change the date variable from factor to date format. Delete rows with missing values saving the data in a new dataframe. NB: the original dataframe is kept for further use later
-```{r transformData}
+
+```r
 fullData$date <- as.Date(fullData$date)
 cleanData <- subset(fullData, !is.na(fullData$steps))
 ```
@@ -74,8 +87,8 @@ cleanData <- subset(fullData, !is.na(fullData$steps))
 ## What is mean total number of steps taken per day?
 
 ### 1. Make a histogram of the total number of steps taken each day
-```{r histogram}
 
+```r
 totalStepsByDay <- tapply(cleanData$steps, cleanData$date, sum)
 hist(totalStepsByDay,
      col="blue",
@@ -85,18 +98,29 @@ hist(totalStepsByDay,
      main="Distribution of Total Steps per day - no missing data")
 ```
 
+![](PA1_template_files/figure-html/histogram-1.png)<!-- -->
+
 
 ### 2. Calculate and report the mean and median total number of steps taken per day
-```{r Mean&Median}
+
+```r
 mean(totalStepsByDay)
+```
+
+[1] 10766.19
+
+```r
 median(totalStepsByDay)
 ```
+
+[1] 10765
 
 
 ## What is the average daily activity pattern?
 
 ### 1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
-```{r timeSeriesPlot}
+
+```r
 intervalAverage <- tapply(cleanData$steps, cleanData$interval, mean)
 intervalAverageDF <- data.frame(interval=as.integer(names(intervalAverage)), averageSteps=intervalAverage)
 
@@ -109,21 +133,30 @@ with(intervalAverageDF,
           ylab="Average steps in the interval - all days considered"))
 ```
 
+![](PA1_template_files/figure-html/timeSeriesPlot-1.png)<!-- -->
+
 ### 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r maxInterval}
+
+```r
 maxAverageSteps <- max(intervalAverageDF$averageSteps)
 intervalAverageDF[intervalAverageDF$averageSteps == maxAverageSteps, ]
 ```
+
+    interval averageSteps
+835      835     206.1698
 
 
 ## Imputing missing values
 
 ### 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
-```{r missingValuesReport}
+
+```r
 sum(is.na(fullData))
 ```
+
+[1] 2304
 
 ### 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
 
